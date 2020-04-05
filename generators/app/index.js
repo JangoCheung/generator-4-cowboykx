@@ -12,14 +12,24 @@ module.exports = class extends Generator {
 
     const prompts = [
       {
+        type: 'list',
+        name: 'appType',
+        message: 'project type',
+        initial: 1,
+        choices: [
+          'react-antd-typescript',
+          'electron-react-antd-typescript'
+        ]
+      },
+      {
         type: 'confirm',
         name: 'appName',
         message: 'project name',
-        default: true
       }
     ];
 
     return this.prompt(prompts).then(props => {
+      console.log(props);
       this.props = props;
     });
   }

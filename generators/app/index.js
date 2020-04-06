@@ -2,6 +2,40 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
+const path = require('path');
+
+const workspace_files = {
+  'react-antd-typescript': [
+    'public/index.html',
+    'src/index.less',
+    'src/index.tsx',
+    'gitignore',
+    'package.json',
+    'tsconfig.base.json',
+    'tsconfig.json',
+    'webpack.config.js',
+    'bower.json'
+  ],
+  'electron-react-antd-typescript': [
+    'build/icon.png',
+    'configs/webpack.config.js',
+    'icon/app_256x256.png',
+    'src/browser/store/index.ts',
+    'src/browser/index.tsx',
+    'src/browser/index.less',
+    'src/node/main.ts',
+    'src/preload.ts',
+    'index.html',
+    'package.json',
+    'tsconfig.base.json',
+    'tsconfig.browser.json',
+    'tsconfig.json',
+    'tsconfig.node.json',
+    'tsconfig.preload.json',
+    'gitignore',
+    'bower.json'
+  ]
+}
 
 module.exports = class extends Generator {
   prompting() {
@@ -15,34 +49,50 @@ module.exports = class extends Generator {
         type: 'list',
         name: 'appType',
         message: 'project type',
-        initial: 1,
         choices: [
           'react-antd-typescript',
           'electron-react-antd-typescript'
         ]
       },
       {
-        type: 'confirm',
+        type: 'text',
         name: 'appName',
         message: 'project name',
+      },
+      {
+        type: 'text',
+        name: 'description',
+        message: 'project description',
       }
     ];
 
     return this.prompt(prompts).then(props => {
-      console.log(props);
       this.props = props;
     });
   }
 
+  _copy(appType) {
+    const files = workspace_files[appType];
+
+    files.forEach((filename) => {
+      let _filename = filename;
+      
+      if (filename === 'gitignore') {
+        _filename = '.gitignore';
+      }
+      let src = path.join(appType, filename);
+
+      if (path.parse(filename).ext === 'png') {
+        this.fs.copy(this.templatePath(src), this.destinationPath(_filename));
+      } else {
+        this.fs.copyTpl(this.templatePath(src), this.destinationPath(_filename), {...this.props});
+      }
+
+    });
+  }
+
   writing() {
-    this.fs.copy(this.templatePath('public/index.html'), this.destinationPath('public/index.html'));
-    this.fs.copy(this.templatePath('src/index.less'), this.destinationPath('src/index.less'));
-    this.fs.copy(this.templatePath('src/index.tsx'), this.destinationPath('src/index.tsx'));
-    this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
-    this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), {appName: this.props.appName});
-    this.fs.copy(this.templatePath('tsconfig.base.json'), this.destinationPath('tsconfig.base.json'));
-    this.fs.copy(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'));
-    this.fs.copy(this.templatePath('webpack.config.js'), this.destinationPath('webpack.config.js'));
+    this._copy(this.props.appType);
   }
 
   install() {

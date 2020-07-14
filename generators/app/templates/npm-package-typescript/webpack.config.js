@@ -1,4 +1,3 @@
-const Ex = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
 
@@ -17,19 +16,19 @@ const baseConfig = {
 
 const webConfig = {
   entry: {
-    'index': './src/index.tsx'
+    'index': './src/index.ts'
   },
   output: {
     filename: './dist/[name].js'
   },
   target: 'web',
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".js"]
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)?$/,
+        test: /\.(ts)?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
@@ -38,21 +37,12 @@ const webConfig = {
       },
       {
         test: /\.less|\.css$/,
-        loader: Ex.extract({
-          fallback: 'style-loader',
-          use: ['css-loader', 'less-loader']
-        })
+        loader: ['style-loader', 'css-loader', 'less-loader']
       }
     ]
   },
-  plugins: [
-    new Ex('./dist/[name].css'),
-  ],
+  plugins: [],
   externals: {
-    "antd": "antd",
-    "react": "React",
-    "react-dom": "ReactDOM",
-    "moment": "moment"
   }
 };
 

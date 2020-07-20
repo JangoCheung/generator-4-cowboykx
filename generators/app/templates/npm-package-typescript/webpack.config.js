@@ -19,7 +19,9 @@ const webConfig = {
     'index': './src/index.ts'
   },
   output: {
-    filename: './dist/[name].js'
+    filename: './dist/[name].js',
+    library: 'MiniAppSimulator',
+    libraryTarget: 'umd',
   },
   target: 'web',
   resolve: {

@@ -2,7 +2,7 @@ const Ex = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
 
-const projectRoot = path.join(__dirname, '..');
+const projectRoot = __dirname;
 
 const baseConfig = {
   mode: 'production',
